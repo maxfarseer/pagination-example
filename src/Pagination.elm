@@ -1,8 +1,8 @@
 module Pagination exposing (State, init, view)
 
 import Html exposing (Html, button, div, input, span, text)
-import Html.Attributes
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (type_, value)
+import Html.Events exposing (onClick, onInput)
 
 
 type State
@@ -26,31 +26,36 @@ init internal =
 type Msg
     = Prev
     | Next
+    | PageChanged String
 
 
-update : Msg -> State
-update msg =
+update : Msg -> State -> State
+update msg (State internal) =
     case msg of
         Prev ->
-            State { current = 0, total = 10 }
+            State { current = internal.current - 1, total = 10 }
 
         Next ->
-            State { current = 2, total = 10 }
+            State { current = internal.current + 1, total = 10 }
+
+        PageChanged str ->
+            State { current = 10, total = 10 }
 
 
-
---        (State -> msg)
--- onClick : msg -> Attribute msg
--- onInput : (String -> msg) -> Attribute msg
-
-
-view : (State -> msg) -> Html msg
-view toMsg =
+view : (State -> msg) -> State -> Html msg
+view toMsg (State internal) =
     div []
-        [ button [ onClick <| toMsg (update Prev) ] [ text "<" ]
+        [ button [ onClick <| toMsg (update Prev (State internal)) ] [ text "<" ]
         , span [] [ text " " ]
-        , input [] []
-        , span [] [ text " / 10" ] -- total pages
+        , input
+            [ type_ "text"
+            , value <| String.fromInt internal.current
+
+            -- onInput PageChanged
+            ]
+            []
+        , span [] [ text " / " ]
+        , span [] [ text (String.fromInt internal.total) ]
         , span [] [ text " " ]
-        , button [ onClick <| toMsg (update Next) ] [ text ">" ]
+        , button [ onClick <| toMsg (update Next (State internal)) ] [ text ">" ]
         ]

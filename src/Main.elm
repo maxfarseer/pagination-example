@@ -50,7 +50,7 @@ update msg model =
                 _ =
                     Debug.log "New pagination state" state
             in
-            ( model, Cmd.none )
+            ( { model | pagination = state }, Cmd.none )
 
 
 
@@ -63,7 +63,7 @@ view model =
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Pagination example" ]
         , button [ onClick ClickedBtn ] [ text "Click me" ]
-        , Pagination.view ChangedPagination
+        , Pagination.view ChangedPagination model.pagination
         ]
 
 
