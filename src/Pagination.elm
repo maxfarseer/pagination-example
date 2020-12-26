@@ -28,6 +28,16 @@ type Msg
     | Next
 
 
+update : Msg -> State
+update msg =
+    case msg of
+        Prev ->
+            State { current = 0, total = 10 }
+
+        Next ->
+            State { current = 2, total = 10 }
+
+
 
 --        (State -> msg)
 -- onClick : msg -> Attribute msg
@@ -37,10 +47,10 @@ type Msg
 view : (State -> msg) -> Html msg
 view toMsg =
     div []
-        [ button [ onClick Prev ] [ text "<" ]
+        [ button [ onClick <| toMsg (update Prev) ] [ text "<" ]
         , span [] [ text " " ]
         , input [] []
         , span [] [ text " / 10" ] -- total pages
         , span [] [ text " " ]
-        , button [ onClick Next ] [ text ">" ]
+        , button [ onClick <| toMsg (update Next) ] [ text ">" ]
         ]
