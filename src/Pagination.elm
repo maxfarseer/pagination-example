@@ -39,7 +39,11 @@ update msg (State internal) =
             State { current = internal.current + 1, total = 10 }
 
         PageChanged str ->
-            State { current = 10, total = 10 }
+            let
+                page =
+                    String.toInt str
+            in
+            State { current = page |> Maybe.withDefault 0, total = 10 }
 
 
 view : (State -> msg) -> State -> Html msg
@@ -50,8 +54,7 @@ view toMsg (State internal) =
         , input
             [ type_ "text"
             , value <| String.fromInt internal.current
-
-            -- onInput PageChanged
+            , onInput (\s -> toMsg (update (PageChanged s) (State internal)))
             ]
             []
         , span [] [ text " / " ]
